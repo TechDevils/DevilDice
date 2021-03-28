@@ -17,6 +17,14 @@
     "dice",
     "rolling"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TechDevils/DevilDice.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TechDevils/DevilDice/issues"
+  },
+  "homepage": "https://github.com/TechDevils/DevilDice#readme",
   "author": "Andrew Chadwick",
   "license": "ISC"
 }
