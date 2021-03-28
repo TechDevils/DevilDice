@@ -1,6 +1,6 @@
 {
   "name": "devildice",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Create dice and use them",
   "main": "index.js",
   "dependencies": {
