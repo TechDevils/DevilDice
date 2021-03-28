@@ -4,6 +4,7 @@ var ds = [];
 addDice(6);
 showDice();
 
+
 function rollAllDice(rollXTimes, withIndex) {
     return roll(ds, rollXTimes, withIndex);
 }
@@ -42,7 +43,7 @@ function roll(dices, rollXTimes, withIndex) {
         }
         outcome[`roll_${i}`] = [...rollGroups];
     }
-    logMessage(outcome);
+    logMessage(JSON.stringify(outcome));
     return outcome;
 }
 
