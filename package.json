@@ -1,0 +1,22 @@
+{
+  "name": "devildice",
+  "version": "1.0.0",
+  "description": "Create dice and use them",
+  "main": "index.js",
+  "dependencies": {
+    "arrayrandompicker": "^1.0.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "dice",
+    "roll",
+    "configured",
+    "dice",
+    "rolling"
+  ],
+  "author": "Andrew Chadwick",
+  "license": "ISC"
+}
