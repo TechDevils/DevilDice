@@ -67,7 +67,6 @@ dd.addDice(3);
 // in this case 2 would be the  key for the d10
 dd.removeDice(2);
 
-//output : {"dice":[{"key":0,"die":[1,2,3,4,5,6]}]}
 ```
 
 ## Advanced dice
