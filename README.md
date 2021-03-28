@@ -69,3 +69,37 @@ dd.removeDice(2);
 
 //output : {"dice":[{"key":0,"die":[1,2,3,4,5,6]}]}
 ```
+
+## Advanced dice
+
+### Roll All Dice
+
+```
+var dd = require("devildice");
+
+dd.addDice(20);
+dd.addDice(10);
+dd.addDice(3);
+dd.addDice(3);
+
+dd.rollAllDice();
+
+//output : {"roll_0":[4,4,2,1]}
+```
+Roll them x number of times (remember that by default a d6 is added so the first dice unless cleared is a d6)
+```
+var dd = require("devildice");
+
+dd.addDice(20);
+dd.addDice(10);
+dd.addDice(3);
+dd.addDice(3);
+
+dd.rollAllDice(6);
+
+//output : {"roll_0":[4,13,2,2,2],"roll_1":[2,7,2,3,2],"roll_2":[5,18,2,3,2],"roll_3":[1,6,6,3,2],"roll_4":[6,4,8,1,3],"roll_5":[1,8,9,2,3]}
+```
+
+if you like check the rest of my projects at https://github.com/TechDevils
+and maybe checkout
+[![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/M4M31JOPH)
