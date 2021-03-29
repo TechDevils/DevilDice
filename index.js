@@ -280,3 +280,5 @@ function getTotal(input){
 //ToDo : check class and private fields work with webpack for web pages
 //ToDo : Add multiple dice by passing and array to the add method
 //ToDo : Make Array summary a mpn module
+//ToDo : Roll history (default 10 rolls)
+//ToDo : Roll history stats
