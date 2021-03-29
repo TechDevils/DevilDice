@@ -116,3 +116,4 @@ module.exports = DevilDice;
 //ToDo : change if roll with no dice log message but return empty array of object or error
 //ToDo : don't use private fields as not widely supported
 //ToDo : check class and private fields work with webpack for web pages
+//ToDo : Add multiple dice by passing and array to the add method
