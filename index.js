@@ -4,18 +4,18 @@ var ds = [];
 addDice(6);
 showDice();
 
-
-function rollAllDice(rollXTimes, withIndex) {
+class DevilDice{
+rollAllDice(rollXTimes, withIndex) {
     return roll(ds, rollXTimes, withIndex);
 }
 
-function rollDiceOf(size, times) {
+rollDiceOf(size, times) {
     var dice = addDice(size, true);
     var dices = [dice];
     return roll(dices, times);
 }
 
-function roll(dices, rollXTimes, withIndex) {
+roll(dices, rollXTimes, withIndex) {
     if (!dices) {
         dices = [...ds];
     }
@@ -47,7 +47,7 @@ function roll(dices, rollXTimes, withIndex) {
     return outcome;
 }
 
-function addDice(sides, dontAddToStore) {
+addDice(sides, dontAddToStore) {
     var newDice = []
     for (let i = 0; i < sides; i++) {
         newDice.push(i + 1);
@@ -59,15 +59,15 @@ function addDice(sides, dontAddToStore) {
     return newDice;
 }
 
-function removeDice(key) {
+removeDice(key) {
     ds.splice(key,1);
 }
 
-function clearStoredDice() {
+clearStoredDice() {
     ds.length = 0;
 }
 
-function showDice() {
+showDice() {
     var diceOutput = {"dice" :[]};
 
     for (let i = 0; i < ds.length; i++) {
@@ -78,7 +78,7 @@ function showDice() {
     logMessage(JSON.stringify(diceOutput));
 }
 
-function logMessage(msg) {
+logMessage(msg) {
     var currentTime = new Date();
     var month = `00${currentTime.getUTCMonth()+1}`.substr(-2);
     var day = `00${currentTime.getUTCDate()}`.substr(-2);
@@ -90,12 +90,29 @@ function logMessage(msg) {
     console.log(`${formattedDateTime} : ${msg}`);
 }
 
-module.exports = {
-    rollAllDice,
-    addDice,
-    rollDiceOf,
-    roll,
-    clearStoredDice,
-    showDice,
-    removeDice
+// module.exports = {
+//     rollAllDice,
+//     addDice,
+//     rollDiceOf,
+//     roll,
+//     clearStoredDice,
+//     showDice,
+//     removeDice
+// }
 }
+
+module.exports = DevilDice;
+
+
+//ToDo : Change dice output in min mode to array of arrays.
+//ToDo : Change dice output in verbose mode object with value of dice with to array of arrays.
+//ToDo : Change dice output in verbose mode object with value of dice with to array of arrays.
+//ToDo : Change dice output in verbose mode object with stats min max mean total of roll.
+//ToDo : show dice output as in min or verbose level
+//ToDo : at min show dice as 3d6 or 1d6 or 1d4 1d10 2d20
+//ToDo : as verbose show dice as 3 dice with 6 sides etc etc
+//ToDo : as verbose show dice as 3 dice with 6 sides etc etc
+//ToDo : add log message on roll. also check messages on other methods
+//ToDo : change if roll with no dice log message but return empty array of object or error
+//ToDo : don't use private fields as not widely supported
+//ToDo : check class and private fields work with webpack for web pages
