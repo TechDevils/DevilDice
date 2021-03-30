@@ -1,4 +1,5 @@
 var rpi = require('arrayrandompicker');
+var rs = require('arraysummary')();
 
 class DevilDice{
     constructor(){
@@ -9,22 +10,32 @@ class DevilDice{
     }
 
     rollAllDice(rollXTimes, withIndex) {
-        return this.roll(this.ds, rollXTimes, withIndex);
+        return this.roll(this.ds, rollXTimes, withIndex, false);
+    }
+    rollAllDiceWithStats(rollXTimes) {
+        return this.roll(this.ds, rollXTimes, false, true);
     }
 
     rollDiceOf(size, times) {
-        var dice = addDice(size, true);
-        var dices = [dice];
-        return this.roll(dices, times);
+        var dice = this.addDice(size, true);
+        return this.roll(dice, times, false, false);
     }
 
-    roll(dices, rollXTimes, withIndex) {
+    roll(dices, rollXTimes, withIndex,withStats) {
+        if(this.mode == 1){
+            var diceNames = [];
+            for (let d = 0; d < dices.length; d++) {
+                const currentDice = dices[d];
+                diceNames.push(getDiceName(currentDice));
+            }
+            logMessage(`Rolling ${dices.length} dice (${diceNames}) x ${rollXTimes} times`);
+        }
         if (!dices) {
             dices = [...this.ds];
         }
         if (dices.length == 0) {
             logMessage("No dice to roll");
-            return {};
+            return [];
         }
         if (!rollXTimes) {
             rollXTimes = 1;
@@ -61,24 +72,51 @@ class DevilDice{
             }
             
         }
+        if(withStats){
+            var allRollsNumbers = [];
+            for (let i = 0; i < outcome.length; i++) {
+                const item = outcome[i];
+                if(this.mode == 0){
+                    allRollsNumbers = [...allRollsNumbers,...item];
+                }else if(this.mode == 1){
+                    allRollsNumbers = [...allRollsNumbers,...item.result];
+                }
+            }
+            var stats = rs.processData('all dice',allRollsNumbers);
+            outcome.push(stats);
+        }
         logMessage(JSON.stringify(outcome));
         return outcome;
     }
 
-    addDice(sides, dontAddToStore) {
-        var newDice = []
-        for (let i = 0; i < sides; i++) {
-            newDice.push(i + 1);
-        }
-        if (!dontAddToStore) {
-            this.ds.push([...newDice]);
+    addDice(newDiceNumbers, dontAddToStore) {
+
+        var output = [];
+        if(Array.isArray(newDiceNumbers)){
+            for (let i = 0; i < newDiceNumbers.length; i++) {
+                const currentDiceSize = newDiceNumbers[i];
+                var newDice = createDiceOfSides(currentDiceSize);
+                output.push(newDice);
+                if (!dontAddToStore) {
+                    logMessage(`Adding new dice ${getDiceName(newDice)}`);
+                    this.ds.push([...newDice]);
+                }
+            }
+        }else{
+            var newDice = createDiceOfSides(newDiceNumbers);
+            output.push(newDice);
+            if (!dontAddToStore) {
+                logMessage(`Adding new dice ${getDiceName(newDice)}`);
+                this.ds.push([...newDice]);
+            }
         }
 
-        return newDice;
+        return output;
     }
 
     removeDice(key) {
-        this.ds.splice(key,1);
+        var deleted = this.ds.splice(key,1);
+        logMessage(`Removed ${getDiceName(deleted[0])}`)
     }
 
     clearStoredDice() {
@@ -114,6 +152,13 @@ module.exports = DevilDice;
 
 /* "Private" functions */
 
+function createDiceOfSides(number){
+    var newDice = [];
+    for (let i = 0; i < number; i++) {
+        newDice.push(i + 1);
+    }
+    return newDice;
+}
 function logMessage(msg) {
     var currentTime = new Date();
     var month = `00${currentTime.getUTCMonth()+1}`.substr(-2);
@@ -139,146 +184,20 @@ function rollStats(results){
         "count" : 0
     };
 
-    var numbers = processData("dice",results);
+    var numbers = rs.processData("dice",results);
 
     rollStatsOutput.min = numbers.min;
     rollStatsOutput.max = numbers.max;
     rollStatsOutput.mode = numbers.mode;
     rollStatsOutput.mean = numbers.mean;
+    rollStatsOutput.median = numbers.median;
     rollStatsOutput.count = numbers.count;
     rollStatsOutput.total = numbers.total;
+    rollStatsOutput.standardDeviation = numbers.standardDeviation;
+    rollStatsOutput.quartile = numbers.quartile;
 
     return rollStatsOutput;
 }
-function processData(name, numbers)
-{
-	let output = {
-		name : name,
-		min : undefined,
-		max : undefined,
-		mean : undefined,
-		median : undefined,
-		mode : undefined,
-		range : undefined,
-		count : undefined,
-        total : undefined
-	}
-	
-    numbers = numbers.sort((a,b) => {return b - a});
 
-    output.total = getTotal(numbers);
-
-	output.count = numbers.length;
-	var minMax = getMinAndMaxFromInts(numbers);
-	output.max = minMax.max;
-	output.min = minMax.min;
-	output.range = output.max - output.min;
-	if(isNaN(output.range)){
-		output.range = undefined;
-	}
-	var mean = getAverage(numbers);
-	output.mean = mean;
-
-	var quantiles = getQuartiles(numbers);
-	output.median = quantiles.median;
-	output.q1 = quantiles.q1;
-	output.q3 = quantiles.q3;
-
-	var mode = getMostCommon(numbers);
-	output.mode = mode.top;
-	output.modeValues = mode.allValues;
-	//console.dir(output);
-
-	var outputKeys = Object.keys(output);
-
-	for (let k = 0; k < outputKeys.length; k++) {
-		const key = outputKeys[k];
-		if(output[key] == undefined)
-		{
-			delete output[key];
-		}
-	}
-
-	return output;
-}
-
-function getMinAndMaxFromInts(input){
-    var output = {max: input[0], min: input[input.length-1] };
-    return output;
-}
-function getAverage(input){
-	var total = input.reduce((a,cv) => a + cv);
-	var output = total / input.length;
-	if(isNaN(output)){
-		return undefined;
-	}
-    return output;
-}
-function getQuartiles(input){
-	var middleArrayValue = Math.floor(input.length / 2);
-	var output = {};
-	if(input.length % 2 == 0){
-		var leftMiddle = input[middleArrayValue -1];
-		var rightMiddle = input[middleArrayValue];
-		output.median = (leftMiddle + rightMiddle) / 2;
-	}
-	else{
-		output.median = input[middleArrayValue];
-	}
-    return output;
-}
-function getMostCommon(input){
-	var values = {};
-	for (let i = 0; i < input.length; i++) {
-		const number = input[i];
-		if(values[number]){
-			values[number] += 1;
-		}
-		else{
-			values[number] = {};
-			values[number] = 1;
-		}
-	}	
-	var keys = Object.keys(values);
-	var top = undefined;
-	var maxCount = 0;
-	for (let k = 0; k < keys.length; k++) {
-		let key = keys[k];
-		const checkValue = values[key];
-		if(checkValue == 1){
-			continue;
-		}
-		if(checkValue > maxCount){
-			top = key;
-			maxCount = checkValue;
-		}
-	}
-	var output = {};
-	output["allValues"] = values;
-	output["top"] = top;
-
-    return output;
-}
-
-function getTotal(input){
-    return input.reduce((p,c,i) => {return p += c;})
-}
-
-
-
-//ToDo : Change dice output in min mode to array of arrays.
-//ToDo : Change dice output in verbose mode object with value of dice with to array of arrays.
-//ToDo : Change dice output in verbose mode object with value of dice with to array of arrays.
-//ToDo : Change dice output in verbose mode object with stats min max mean total of roll.
-//ToDo : show dice output as in min or verbose level
-//ToDo : at min show dice as 3d6 or 1d6 or 1d4 1d10 2d20
-//ToDo : as verbose show dice as 3 dice with 6 sides etc etc
-//ToDo : as verbose show dice as 3 dice with 6 sides etc etc
-//ToDo : add log message on roll. also check messages on other methods
-//ToDo : change if roll with no dice log message but return empty array of object or error
-//ToDo : don't use private fields as not widely supported
-//ToDo : check class and private fields work with webpack for web pages
-//ToDo : Add multiple dice by passing and array to the add method
-//ToDo : Make Array summary a mpn module
 //ToDo : Roll history (default 10 rolls)
 //ToDo : Roll history stats

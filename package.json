@@ -4,7 +4,8 @@
   "description": "Create dice and use them",
   "main": "index.js",
   "dependencies": {
-    "arrayrandompicker": "^1.0.3"
+    "arrayrandompicker": "^1.0.3",
+    "arraysummary": "^1.0.1"
   },
   "devDependencies": {},
   "scripts": {
