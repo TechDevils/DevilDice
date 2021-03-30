@@ -1,10 +1,11 @@
 {
   "name": "devildice",
-  "version": "1.0.2",
+  "version": "01.01.00",
   "description": "Create dice and use them",
   "main": "index.js",
   "dependencies": {
-    "arrayrandompicker": "^1.0.3"
+    "arrayrandompicker": "^1.0.3",
+    "arraysummary": "^1.0.1"
   },
   "devDependencies": {},
   "scripts": {
