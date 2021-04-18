@@ -2,10 +2,12 @@ var rpi = require('arrayrandompicker');
 var rs = require('arraysummary')();
 
 class DevilDice{
-    constructor(){
+    constructor(addDefault = true){
         this.ds = [];
         this.mode = 0;
-        this.addDice(6);
+        if(addDefault){
+            this.addDice(6);
+        }
         this.showDice();
     }
 
